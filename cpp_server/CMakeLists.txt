@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.30)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# SET compiler
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+set(CMAKE_C_COMPILER "/usr/bin/clang")
+project(cpp_server VERSION 0.1.0 LANGUAGES C CXX)
+
+aux_source_directory(src SRC_LIST)
+add_executable(server ${CMAKE_SOURCE_DIR}/index/Server.cpp  ${SRC_LIST})
+add_executable(client ${CMAKE_SOURCE_DIR}/index/client.cpp  ${SRC_LIST})
+target_include_directories(server PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(client PRIVATE ${CMAKE_SOURCE_DIR}/include)
