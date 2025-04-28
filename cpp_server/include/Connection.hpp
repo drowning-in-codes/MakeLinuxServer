@@ -13,7 +13,7 @@ public:
   Connection(EventLoop *_loop, int fd, int t_connid);
   Connection(EventLoop *_loop, SerSocket *t_socket, int t_connid)
       : Connection(_loop, t_socket->get_fd(), t_connid) {}
-  enum ConnectionState {
+  enum class ConnectionState {
     Invalid = 1,
     Connected,
     Closed,
@@ -24,7 +24,15 @@ public:
   void Write();
   void HandleClose();
   void HandleMessage();
-
+  bool isBlocking() const {
+    // F_GETFL
+    int flags = fcntl(fd, F_GETFL, 0);
+    if (flags == -1) {
+      throw std::runtime_error("Failed to get socket flags");
+    }
+    return (flags & O_NONBLOCK) == 0;
+  }
+  void setBlocking(bool blocking) { ::setBlock(fd, blocking); }
   // setter and getter
   void setCloseCallback(const std::function<void(int)> &callback);
   void SetOnConnectCallback(std::function<void(Connection *)> const &callback);
@@ -51,7 +59,9 @@ public:
 private:
   int conid;
   void ReadNonBlocking();
+  void ReadBlocking();
   void WriteNonBlocking();
+  void WriteBlocking();
   ConnectionState m_state;
   const static int BUFFER_SIZE = 1024;
   std::unique_ptr<Logger> logger;

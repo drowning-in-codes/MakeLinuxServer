@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utils/utils.hpp"
 #include <InetAddress.hpp>
 #include <asm-generic/socket.h>
 #include <fcntl.h>
@@ -7,6 +8,7 @@
 #include <sys/socket.h>
 class CliSocket {
 public:
+  DISALLOW_COPY_AND_MOVE(CliSocket);
   CliSocket() : CliSocket(AF_INET, SOCK_STREAM, 0) {}
   CliSocket(int domain, int type, int protocol);
   CliSocket(int t_fd) : fd(t_fd){};
@@ -16,6 +18,12 @@ public:
     int opt = 1;
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
       throw std::runtime_error("Failed to set socket option");
+    }
+  }
+  void connect(const std::string &ip, uint16_t port) {
+    InetAddress addr(ip, port);
+    if (::connect(fd, (struct sockaddr *)&addr.addr, addr.addr_len) < 0) {
+      throw std::runtime_error("Failed to connect to server");
     }
   }
   void connect(InetAddress *addr) {

@@ -52,7 +52,7 @@ void Channel::enableOpts(uint32_t opts) {
 }
 void Channel::handleEvent() const {
   // 根据事件类型处理对应的回调函数
-  if (readyEvents & (EPOLLIN | EPOLLRDHUP | EPOLLPRI)) {
+  if (readyEvents & (EPOLLIN | EPOLLPRI | EPOLLRDHUP )) {
     if (readCallback) {
       readCallback();
     }

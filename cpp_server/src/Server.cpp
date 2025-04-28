@@ -50,11 +50,16 @@ void Server::HandleClose(int fd) {
   //  找到对应的connection
   auto it = connections.find(fd);
   if (it != connections.end()) {
+    // 从connections map中阐述
     connections.erase(it); // 从map中删除
     auto conn = it->second;
+    // 关闭连接
     ::close(fd);
+    // 从epoll中删除fd
     conn->getEventLoop()->deleteChannel(conn->getChannel());
     conn = nullptr;
+    // 这里没有调用 delete conn; 
+    // 因为这个回调方法本身在Connection的调用中
   }
 }
 void Server::onConnect(std::function<void(Connection *)> fn) {

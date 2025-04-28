@@ -18,6 +18,7 @@ private:
   Logger *logger = new ConsoleLogger();
 
 public:
+  DISALLOW_COPY_AND_MOVE(Acceptor);
   Acceptor(EventLoop *t_loop,
            uint16_t port = ConfiguraionConstants::DEFAULT_PORT,
            std::string_view ip = ConfiguraionConstants::DEFAULT_IP,
@@ -34,7 +35,6 @@ public:
 
   // 当客户端进行连接的回调函数,是对应channel的readCallback
   void acceptConnection();
-
 
   // getter and setter
   void setNewConnectionCallback(std::function<void(int)> callback) {

@@ -14,6 +14,7 @@ Connection::Connection(EventLoop *_loop, int t_fd, int connid)
   assert(fd >= 0);
   logger = std::make_unique<ConsoleLogger>();
   if (m_loop != nullptr) {
+    // 是否有传入的eventloop,如果传入了eventloop,表示会使用对应的loop添加epoll事件
     m_channel = std::make_unique<Channel>(m_loop, fd);
     // 加入epll实例
     m_channel->enableET();
@@ -73,14 +74,22 @@ void Connection::Read() {
     return;
   }
   read_buffer->clear();
-  ReadNonBlocking();
+  if (isBlocking()) {
+    ReadBlocking();
+  } else {
+    ReadNonBlocking();
+  }
 }
 
 void Connection::Write() {
   if (m_state != ConnectionState::Connected) {
     return;
   }
-  WriteNonBlocking();
+  if (isBlocking()) {
+    WriteBlocking();
+  } else {
+    WriteNonBlocking();
+  }
   send_buffer->clear();
 }
 void Connection::HandleClose() {
@@ -92,11 +101,42 @@ void Connection::HandleClose() {
   }
 }
 
+void Connection::ReadBlocking() {
+  char data[BUFFER_SIZE];
+  bzero(data, sizeof(data));
+  bzero(data, sizeof(data));
+  int intrTimes = 0;
+  while (true && intrTimes < 3) {
+    ssize_t bytesRead = read(fd, data, BUFFER_SIZE);
+    if (bytesRead > 0) {
+      // 处理读取到的数据
+      logger->logInfo("Received data: " + std::string(data, bytesRead));
+      read_buffer->append(data, bytesRead);
+      break;
+    } else if (bytesRead == -1 && errno == EINTR) { //客户端正常中断、继续读取
+      printf("continue reading");
+      intrTimes++;
+      continue;
+    } else if (bytesRead == 0) {
+      // 客户端关闭连接
+      printf("Client disconnected\n");
+      HandleClose();
+      break;
+
+    } else {
+      perror("read");
+      HandleClose();
+      break;
+    }
+  }
+}
 void Connection::ReadNonBlocking() {
   char data[BUFFER_SIZE];
   while (true) {
     bzero(data, sizeof(data));
+    printf("blocking read\n");
     ssize_t bytesRead = read(fd, data, BUFFER_SIZE);
+    printf("bytesRead: %ld\n", bytesRead);
     if (bytesRead > 0) {
       // 处理读取到的数据
       logger->logInfo("Received data: " + std::string(data, bytesRead));
@@ -119,7 +159,27 @@ void Connection::ReadNonBlocking() {
     }
   }
 }
-
+void Connection::WriteBlocking() {
+  size_t totalBytes = send_buffer->size();
+  size_t bytesSent = 0;
+  int intrTimes = 0;
+  while (bytesSent < totalBytes && intrTimes < 3) {
+    ssize_t result =
+        ::write(fd, send_buffer->data() + bytesSent, totalBytes - bytesSent);
+    if (result == -1) {
+      if (errno == EINTR) {
+        // Interrupted by a signal, continue sending
+        intrTimes++;
+        continue;
+      }
+      // other errors
+      perror("other error when writing");
+      m_state = ConnectionState::Closed;
+      break;
+    }
+    bytesSent += result;
+  }
+}
 void Connection::WriteNonBlocking() {
   size_t totalBytes = send_buffer->size();
   size_t bytesSent = 0;

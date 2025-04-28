@@ -6,6 +6,7 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <utils/utils.hpp>
 class ThreadPool {
 private:
   std::vector<std::thread> workers;
@@ -15,6 +16,7 @@ private:
   bool stop;
 
 public:
+  DISALLOW_COPY_AND_MOVE(ThreadPool);
   ThreadPool(int numThreads = 2);
   ~ThreadPool();
   // void add(std::function<void()> task);

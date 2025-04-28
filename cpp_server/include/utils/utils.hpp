@@ -15,7 +15,7 @@
   cname &operator=(cname &&) = delete;
 
 #define DISALLOW_COPY_AND_MOVE(cname)                                          \
-  DISALLOW_COPY(cname) ;                                                       \
+  DISALLOW_COPY(cname);                                                        \
   DISALLOW_MOVE(cname);
 
 inline void errif(bool condition, const std::string &msg) {
@@ -24,6 +24,7 @@ inline void errif(bool condition, const std::string &msg) {
     throw std::runtime_error(prefix + msg);
   }
 }
+
 inline void setNonBlocking(int fd) {
   int flags = fcntl(fd, F_GETFL, 0);
   if (flags == -1) {
@@ -31,6 +32,22 @@ inline void setNonBlocking(int fd) {
   }
   if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
     throw std::runtime_error("Failed to set socket to non-blocking");
+  }
+}
+inline void setBlocking(int fd) {
+  int flags = fcntl(fd, F_GETFL, 0);
+  if (flags == -1) {
+    throw std::runtime_error("Failed to get socket flags");
+  }
+  if (fcntl(fd, F_SETFL, flags & ~O_NONBLOCK) == -1) {
+    throw std::runtime_error("Failed to set socket to blocking");
+  }
+}
+inline void setBlock(int fd, bool blocking) {
+  if (blocking) {
+    setBlocking(fd);
+  } else {
+    setNonBlocking(fd);
   }
 }
 inline void reuseAddr(int fd) {
