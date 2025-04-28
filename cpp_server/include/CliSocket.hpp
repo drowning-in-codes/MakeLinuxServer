@@ -5,23 +5,29 @@
 #include <fcntl.h>
 #include <stdexcept>
 #include <sys/socket.h>
-class SerSocket {
+class CliSocket {
 public:
-  SerSocket() : SerSocket(AF_INET, SOCK_STREAM, 0) {}
-  SerSocket(int domain, int type, int protocol);
-  SerSocket(int t_fd) : fd(t_fd){};
-  ~SerSocket();
+  CliSocket() : CliSocket(AF_INET, SOCK_STREAM, 0) {}
+  CliSocket(int domain, int type, int protocol);
+  CliSocket(int t_fd) : fd(t_fd){};
+  ~CliSocket();
+
   void setReuseAddr() {
     int opt = 1;
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
       throw std::runtime_error("Failed to set socket option");
     }
   }
-  void bind(InetAddress *addr);
-  void bind(InetAddress &addr);
-  void listen(int backlog = SOMAXCONN);
-  int accept(InetAddress &addr);
-  int accept(InetAddress *addr);
+  void connect(InetAddress *addr) {
+    if (::connect(fd, (struct sockaddr *)&addr->addr, addr->addr_len) < 0) {
+      throw std::runtime_error("Failed to connect to server");
+    }
+  }
+  void connect(InetAddress &addr) {
+    if (::connect(fd, (struct sockaddr *)&addr.addr, addr.addr_len) < 0) {
+      throw std::runtime_error("Failed to connect to server");
+    }
+  }
   int get_fd() const { return fd; }
   void setNonBlocking() {
     int flags = fcntl(fd, F_GETFL, 0);

@@ -16,10 +16,10 @@ public:
     addr.sin_port = 0;
     addr.sin_addr.s_addr = INADDR_ANY;
   }
-  InetAddress(const char *ip, uint16_t port);
+  InetAddress(std::string_view ip, uint16_t port);
   uint16_t getPort() const { return ntohs(addr.sin_port); }
   std::string getIp() const {
-    char *ip = new char[32];
+    char *ip = new char[16];
     inet_ntop(AF_INET, &addr.sin_addr, ip, addr_len);
     std::string ip_str(ip);
     delete[] ip;

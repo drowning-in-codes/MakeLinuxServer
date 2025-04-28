@@ -12,7 +12,7 @@
 
 # =============================================================================
 # Project: cpp_server
-# Configurations: 
+# Configurations: Debug
 # =============================================================================
 
 #############################################
@@ -20,6 +20,11 @@
 
 ninja_required_version = 1.5
 
+
+#############################################
+# Set configuration variable for custom commands.
+
+CONFIGURATION = Debug
 # =============================================================================
 # Include auxiliary files.
 
@@ -44,30 +49,79 @@ cmake_ninja_workdir = /home/proanimer/cpp_workspace/cpp_server/build/
 
 build cmake_object_order_depends_target_server: phony || .
 
-build CMakeFiles/server.dir/index/Server.cpp.o: CXX_COMPILER__server_unscanned_ /home/proanimer/cpp_workspace/cpp_server/index/Server.cpp || cmake_object_order_depends_target_server
-  DEP_FILE = CMakeFiles/server.dir/index/Server.cpp.o.d
-  FLAGS = -std=c++17
+build CMakeFiles/server.dir/init/index.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/init/index.cpp || cmake_object_order_depends_target_server
+  DEP_FILE = CMakeFiles/server.dir/init/index.cpp.o.d
+  FLAGS = -g -std=c++17
   INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
   OBJECT_DIR = CMakeFiles/server.dir
-  OBJECT_FILE_DIR = CMakeFiles/server.dir/index
+  OBJECT_FILE_DIR = CMakeFiles/server.dir/init
 
-build CMakeFiles/server.dir/src/Epoll.cpp.o: CXX_COMPILER__server_unscanned_ /home/proanimer/cpp_workspace/cpp_server/src/Epoll.cpp || cmake_object_order_depends_target_server
+build CMakeFiles/server.dir/src/Acceptor.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Acceptor.cpp || cmake_object_order_depends_target_server
+  DEP_FILE = CMakeFiles/server.dir/src/Acceptor.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/server.dir
+  OBJECT_FILE_DIR = CMakeFiles/server.dir/src
+
+build CMakeFiles/server.dir/src/Channel.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Channel.cpp || cmake_object_order_depends_target_server
+  DEP_FILE = CMakeFiles/server.dir/src/Channel.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/server.dir
+  OBJECT_FILE_DIR = CMakeFiles/server.dir/src
+
+build CMakeFiles/server.dir/src/CliSocket.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/CliSocket.cpp || cmake_object_order_depends_target_server
+  DEP_FILE = CMakeFiles/server.dir/src/CliSocket.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/server.dir
+  OBJECT_FILE_DIR = CMakeFiles/server.dir/src
+
+build CMakeFiles/server.dir/src/Connection.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Connection.cpp || cmake_object_order_depends_target_server
+  DEP_FILE = CMakeFiles/server.dir/src/Connection.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/server.dir
+  OBJECT_FILE_DIR = CMakeFiles/server.dir/src
+
+build CMakeFiles/server.dir/src/Epoll.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Epoll.cpp || cmake_object_order_depends_target_server
   DEP_FILE = CMakeFiles/server.dir/src/Epoll.cpp.o.d
-  FLAGS = -std=c++17
+  FLAGS = -g -std=c++17
   INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
   OBJECT_DIR = CMakeFiles/server.dir
   OBJECT_FILE_DIR = CMakeFiles/server.dir/src
 
-build CMakeFiles/server.dir/src/InetAddress.cpp.o: CXX_COMPILER__server_unscanned_ /home/proanimer/cpp_workspace/cpp_server/src/InetAddress.cpp || cmake_object_order_depends_target_server
+build CMakeFiles/server.dir/src/EventLoop.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/EventLoop.cpp || cmake_object_order_depends_target_server
+  DEP_FILE = CMakeFiles/server.dir/src/EventLoop.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/server.dir
+  OBJECT_FILE_DIR = CMakeFiles/server.dir/src
+
+build CMakeFiles/server.dir/src/InetAddress.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/InetAddress.cpp || cmake_object_order_depends_target_server
   DEP_FILE = CMakeFiles/server.dir/src/InetAddress.cpp.o.d
-  FLAGS = -std=c++17
+  FLAGS = -g -std=c++17
   INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
   OBJECT_DIR = CMakeFiles/server.dir
   OBJECT_FILE_DIR = CMakeFiles/server.dir/src
 
-build CMakeFiles/server.dir/src/SerSocket.cpp.o: CXX_COMPILER__server_unscanned_ /home/proanimer/cpp_workspace/cpp_server/src/SerSocket.cpp || cmake_object_order_depends_target_server
+build CMakeFiles/server.dir/src/SerSocket.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/SerSocket.cpp || cmake_object_order_depends_target_server
   DEP_FILE = CMakeFiles/server.dir/src/SerSocket.cpp.o.d
-  FLAGS = -std=c++17
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/server.dir
+  OBJECT_FILE_DIR = CMakeFiles/server.dir/src
+
+build CMakeFiles/server.dir/src/Server.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Server.cpp || cmake_object_order_depends_target_server
+  DEP_FILE = CMakeFiles/server.dir/src/Server.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/server.dir
+  OBJECT_FILE_DIR = CMakeFiles/server.dir/src
+
+build CMakeFiles/server.dir/src/ThreadPool.cpp.o: CXX_COMPILER__server_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/ThreadPool.cpp || cmake_object_order_depends_target_server
+  DEP_FILE = CMakeFiles/server.dir/src/ThreadPool.cpp.o.d
+  FLAGS = -g -std=c++17
   INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
   OBJECT_DIR = CMakeFiles/server.dir
   OBJECT_FILE_DIR = CMakeFiles/server.dir/src
@@ -80,7 +134,8 @@ build CMakeFiles/server.dir/src/SerSocket.cpp.o: CXX_COMPILER__server_unscanned_
 #############################################
 # Link the executable server
 
-build server: CXX_EXECUTABLE_LINKER__server_ CMakeFiles/server.dir/index/Server.cpp.o CMakeFiles/server.dir/src/Epoll.cpp.o CMakeFiles/server.dir/src/InetAddress.cpp.o CMakeFiles/server.dir/src/SerSocket.cpp.o
+build server: CXX_EXECUTABLE_LINKER__server_Debug CMakeFiles/server.dir/init/index.cpp.o CMakeFiles/server.dir/src/Acceptor.cpp.o CMakeFiles/server.dir/src/Channel.cpp.o CMakeFiles/server.dir/src/CliSocket.cpp.o CMakeFiles/server.dir/src/Connection.cpp.o CMakeFiles/server.dir/src/Epoll.cpp.o CMakeFiles/server.dir/src/EventLoop.cpp.o CMakeFiles/server.dir/src/InetAddress.cpp.o CMakeFiles/server.dir/src/SerSocket.cpp.o CMakeFiles/server.dir/src/Server.cpp.o CMakeFiles/server.dir/src/ThreadPool.cpp.o
+  FLAGS = -g
   OBJECT_DIR = CMakeFiles/server.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -96,30 +151,79 @@ build server: CXX_EXECUTABLE_LINKER__server_ CMakeFiles/server.dir/index/Server.
 
 build cmake_object_order_depends_target_client: phony || .
 
-build CMakeFiles/client.dir/index/client.cpp.o: CXX_COMPILER__client_unscanned_ /home/proanimer/cpp_workspace/cpp_server/index/client.cpp || cmake_object_order_depends_target_client
-  DEP_FILE = CMakeFiles/client.dir/index/client.cpp.o.d
-  FLAGS = -std=c++17
+build CMakeFiles/client.dir/init/client.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/init/client.cpp || cmake_object_order_depends_target_client
+  DEP_FILE = CMakeFiles/client.dir/init/client.cpp.o.d
+  FLAGS = -g -std=c++17
   INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
   OBJECT_DIR = CMakeFiles/client.dir
-  OBJECT_FILE_DIR = CMakeFiles/client.dir/index
+  OBJECT_FILE_DIR = CMakeFiles/client.dir/init
 
-build CMakeFiles/client.dir/src/Epoll.cpp.o: CXX_COMPILER__client_unscanned_ /home/proanimer/cpp_workspace/cpp_server/src/Epoll.cpp || cmake_object_order_depends_target_client
+build CMakeFiles/client.dir/src/Acceptor.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Acceptor.cpp || cmake_object_order_depends_target_client
+  DEP_FILE = CMakeFiles/client.dir/src/Acceptor.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/client.dir
+  OBJECT_FILE_DIR = CMakeFiles/client.dir/src
+
+build CMakeFiles/client.dir/src/Channel.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Channel.cpp || cmake_object_order_depends_target_client
+  DEP_FILE = CMakeFiles/client.dir/src/Channel.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/client.dir
+  OBJECT_FILE_DIR = CMakeFiles/client.dir/src
+
+build CMakeFiles/client.dir/src/CliSocket.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/CliSocket.cpp || cmake_object_order_depends_target_client
+  DEP_FILE = CMakeFiles/client.dir/src/CliSocket.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/client.dir
+  OBJECT_FILE_DIR = CMakeFiles/client.dir/src
+
+build CMakeFiles/client.dir/src/Connection.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Connection.cpp || cmake_object_order_depends_target_client
+  DEP_FILE = CMakeFiles/client.dir/src/Connection.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/client.dir
+  OBJECT_FILE_DIR = CMakeFiles/client.dir/src
+
+build CMakeFiles/client.dir/src/Epoll.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Epoll.cpp || cmake_object_order_depends_target_client
   DEP_FILE = CMakeFiles/client.dir/src/Epoll.cpp.o.d
-  FLAGS = -std=c++17
+  FLAGS = -g -std=c++17
   INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
   OBJECT_DIR = CMakeFiles/client.dir
   OBJECT_FILE_DIR = CMakeFiles/client.dir/src
 
-build CMakeFiles/client.dir/src/InetAddress.cpp.o: CXX_COMPILER__client_unscanned_ /home/proanimer/cpp_workspace/cpp_server/src/InetAddress.cpp || cmake_object_order_depends_target_client
+build CMakeFiles/client.dir/src/EventLoop.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/EventLoop.cpp || cmake_object_order_depends_target_client
+  DEP_FILE = CMakeFiles/client.dir/src/EventLoop.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/client.dir
+  OBJECT_FILE_DIR = CMakeFiles/client.dir/src
+
+build CMakeFiles/client.dir/src/InetAddress.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/InetAddress.cpp || cmake_object_order_depends_target_client
   DEP_FILE = CMakeFiles/client.dir/src/InetAddress.cpp.o.d
-  FLAGS = -std=c++17
+  FLAGS = -g -std=c++17
   INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
   OBJECT_DIR = CMakeFiles/client.dir
   OBJECT_FILE_DIR = CMakeFiles/client.dir/src
 
-build CMakeFiles/client.dir/src/SerSocket.cpp.o: CXX_COMPILER__client_unscanned_ /home/proanimer/cpp_workspace/cpp_server/src/SerSocket.cpp || cmake_object_order_depends_target_client
+build CMakeFiles/client.dir/src/SerSocket.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/SerSocket.cpp || cmake_object_order_depends_target_client
   DEP_FILE = CMakeFiles/client.dir/src/SerSocket.cpp.o.d
-  FLAGS = -std=c++17
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/client.dir
+  OBJECT_FILE_DIR = CMakeFiles/client.dir/src
+
+build CMakeFiles/client.dir/src/Server.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Server.cpp || cmake_object_order_depends_target_client
+  DEP_FILE = CMakeFiles/client.dir/src/Server.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/client.dir
+  OBJECT_FILE_DIR = CMakeFiles/client.dir/src
+
+build CMakeFiles/client.dir/src/ThreadPool.cpp.o: CXX_COMPILER__client_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/ThreadPool.cpp || cmake_object_order_depends_target_client
+  DEP_FILE = CMakeFiles/client.dir/src/ThreadPool.cpp.o.d
+  FLAGS = -g -std=c++17
   INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
   OBJECT_DIR = CMakeFiles/client.dir
   OBJECT_FILE_DIR = CMakeFiles/client.dir/src
@@ -132,12 +236,115 @@ build CMakeFiles/client.dir/src/SerSocket.cpp.o: CXX_COMPILER__client_unscanned_
 #############################################
 # Link the executable client
 
-build client: CXX_EXECUTABLE_LINKER__client_ CMakeFiles/client.dir/index/client.cpp.o CMakeFiles/client.dir/src/Epoll.cpp.o CMakeFiles/client.dir/src/InetAddress.cpp.o CMakeFiles/client.dir/src/SerSocket.cpp.o
+build client: CXX_EXECUTABLE_LINKER__client_Debug CMakeFiles/client.dir/init/client.cpp.o CMakeFiles/client.dir/src/Acceptor.cpp.o CMakeFiles/client.dir/src/Channel.cpp.o CMakeFiles/client.dir/src/CliSocket.cpp.o CMakeFiles/client.dir/src/Connection.cpp.o CMakeFiles/client.dir/src/Epoll.cpp.o CMakeFiles/client.dir/src/EventLoop.cpp.o CMakeFiles/client.dir/src/InetAddress.cpp.o CMakeFiles/client.dir/src/SerSocket.cpp.o CMakeFiles/client.dir/src/Server.cpp.o CMakeFiles/client.dir/src/ThreadPool.cpp.o
+  FLAGS = -g
   OBJECT_DIR = CMakeFiles/client.dir
   POST_BUILD = :
   PRE_LINK = :
   TARGET_FILE = client
   TARGET_PDB = client.dbg
+
+# =============================================================================
+# Object build statements for EXECUTABLE target test
+
+
+#############################################
+# Order-only phony target for test
+
+build cmake_object_order_depends_target_test: phony || .
+
+build CMakeFiles/test.dir/test.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/test.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/test.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir
+
+build CMakeFiles/test.dir/src/Acceptor.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Acceptor.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/Acceptor.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/Channel.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Channel.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/Channel.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/CliSocket.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/CliSocket.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/CliSocket.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/Connection.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Connection.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/Connection.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/Epoll.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Epoll.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/Epoll.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/EventLoop.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/EventLoop.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/EventLoop.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/InetAddress.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/InetAddress.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/InetAddress.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/SerSocket.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/SerSocket.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/SerSocket.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/Server.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/Server.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/Server.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+build CMakeFiles/test.dir/src/ThreadPool.cpp.o: CXX_COMPILER__test_unscanned_Debug /home/proanimer/cpp_workspace/cpp_server/src/ThreadPool.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles/test.dir/src/ThreadPool.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/proanimer/cpp_workspace/cpp_server/include
+  OBJECT_DIR = CMakeFiles/test.dir
+  OBJECT_FILE_DIR = CMakeFiles/test.dir/src
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target test
+
+
+#############################################
+# Link the executable test
+
+build test: CXX_EXECUTABLE_LINKER__test_Debug CMakeFiles/test.dir/test.cpp.o CMakeFiles/test.dir/src/Acceptor.cpp.o CMakeFiles/test.dir/src/Channel.cpp.o CMakeFiles/test.dir/src/CliSocket.cpp.o CMakeFiles/test.dir/src/Connection.cpp.o CMakeFiles/test.dir/src/Epoll.cpp.o CMakeFiles/test.dir/src/EventLoop.cpp.o CMakeFiles/test.dir/src/InetAddress.cpp.o CMakeFiles/test.dir/src/SerSocket.cpp.o CMakeFiles/test.dir/src/Server.cpp.o CMakeFiles/test.dir/src/ThreadPool.cpp.o
+  FLAGS = -g
+  OBJECT_DIR = CMakeFiles/test.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = test
+  TARGET_PDB = test.dbg
 
 
 #############################################
@@ -174,7 +381,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /home/proanimer/cpp_workspace/cpp_server/build
 
-build all: phony server client
+build all: phony server client test
 
 # =============================================================================
 # Built-in targets
