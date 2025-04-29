@@ -21,8 +21,8 @@ Connection::Connection(EventLoop *_loop, int t_fd, int connid)
     m_channel->setReadCallback([this]() {
       Read();
       // 处理读事件
-      if (onMessage) {
-        onMessage(this);
+      if (onMessageCallback) {
+        onMessageCallback(shared_from_this());
       }
     });
     // 更新epll实例
@@ -30,7 +30,6 @@ Connection::Connection(EventLoop *_loop, int t_fd, int connid)
   }
   read_buffer = std::make_unique<Buffer>();
   send_buffer = std::make_unique<Buffer>();
-  m_state = ConnectionState::Connected;
   // logger->logInfo("Connection established with fd: " + std::to_string(fd));
   // m_channel->setWriteCallback([this]() { Write(); });
   // m_channel->setUseET(true);
@@ -54,13 +53,8 @@ void Connection::Send(const char *data) {
   Write();
 }
 
-// 设置连接的回调函数 包括fd可读和关闭连接
-void Connection::SetOnConnectCallback(
-    std::function<void(Connection *)> const &callback) {
-  onMessage = std::move(callback);
-}
-void Connection::setCloseCallback(const std::function<void(int)> &callback) {
-  closeCallback = std::move(callback);
+void Connection::ConnectionDestructor() {
+  m_loop->deleteChannel(m_channel.get());
 }
 
 const char *Connection::GetSendData() const { return send_buffer->data(); }
@@ -92,15 +86,21 @@ void Connection::Write() {
   }
   send_buffer->clear();
 }
+
 void Connection::HandleClose() {
   if (m_state != ConnectionState::Closed) {
     m_state = ConnectionState::Closed;
     if (closeCallback) {
-      closeCallback(fd);
+      closeCallback(shared_from_this());
     }
   }
 }
-
+void Connection::HandleMessage() {
+  Read();
+  if (onMessageCallback) {
+    onMessageCallback(shared_from_this());
+  }
+}
 void Connection::ReadBlocking() {
   char data[BUFFER_SIZE];
   bzero(data, sizeof(data));
@@ -134,9 +134,7 @@ void Connection::ReadNonBlocking() {
   char data[BUFFER_SIZE];
   while (true) {
     bzero(data, sizeof(data));
-    printf("blocking read\n");
     ssize_t bytesRead = read(fd, data, BUFFER_SIZE);
-    printf("bytesRead: %ld\n", bytesRead);
     if (bytesRead > 0) {
       // 处理读取到的数据
       logger->logInfo("Received data: " + std::string(data, bytesRead));
@@ -203,4 +201,6 @@ void Connection::WriteNonBlocking() {
     bytesSent += result;
   }
 }
-Connection::~Connection() { close(fd); }
+Connection::~Connection() {
+  close(fd);
+}

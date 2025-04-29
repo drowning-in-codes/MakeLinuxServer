@@ -6,7 +6,7 @@
 #include <memory>
 #include <utils/utils.hpp>
 class Buffer;
-class Connection {
+class Connection : public std::enable_shared_from_this<Connection> {
   // 创建连接
 public:
   DISALLOW_COPY_AND_MOVE(Connection);
@@ -22,6 +22,16 @@ public:
   ~Connection();
   void Read();
   void Write();
+
+  void ConnectionEstablished() {
+    m_state = ConnectionState::Connected;
+    // 增加引用计数
+    m_channel->Tie(shared_from_this());
+    if (onConnectinoCallback) {
+      onConnectinoCallback(shared_from_this());
+    }
+  }
+  // 消息和关闭处理方法
   void HandleClose();
   void HandleMessage();
   bool isBlocking() const {
@@ -34,8 +44,6 @@ public:
   }
   void setBlocking(bool blocking) { ::setBlock(fd, blocking); }
   // setter and getter
-  void setCloseCallback(const std::function<void(int)> &callback);
-  void SetOnConnectCallback(std::function<void(Connection *)> const &callback);
   int getFd() const { return fd; }
   void setFd(int t_fd) { fd = t_fd; }
   void SetSendBuffer(Buffer *t_send_buffer);
@@ -44,6 +52,7 @@ public:
   void SetReadBuffer(const char *data);
   ConnectionState GetState() const { return m_state; }
 
+  void ConnectionDestructor();
   // 设置发送缓冲区并发送数据
   void Send(const std::string &data);
   void Send(const char *data);
@@ -55,6 +64,23 @@ public:
   int getConid() const { return conid; }
   EventLoop *getEventLoop() const { return m_loop; }
   Channel *getChannel() const { return m_channel.get(); }
+
+  // 设置连接时,消息处理时以及关闭回调函数
+  void setOnMessageCallback(
+      const std::function<void(const std::shared_ptr<Connection> &)>
+          &callback) {
+    onMessageCallback = std::move(callback);
+  }
+  void SetOnConnectCallback(
+      const std::function<void(const std::shared_ptr<Connection> &)>
+          &callback) {
+    onConnectinoCallback = std::move(callback);
+  }
+  void setOnCloseCallback(
+      const std::function<void(const std::shared_ptr<Connection> &)>
+          &callback) {
+    closeCallback = std::move(callback);
+  }
 
 private:
   int conid;
@@ -72,6 +98,7 @@ private:
   //   InetAddress *addr;
   EventLoop *m_loop;                  // 包含epoll
   std::unique_ptr<Channel> m_channel; //  包含epoll_data
-  std::function<void(int)> closeCallback;
-  std::function<void(Connection *)> onMessage;
+  std::function<void(const std::shared_ptr<Connection> &)> onConnectinoCallback;
+  std::function<void(const std::shared_ptr<Connection> &)> onMessageCallback;
+  std::function<void(const std::shared_ptr<Connection> &)> closeCallback;
 };

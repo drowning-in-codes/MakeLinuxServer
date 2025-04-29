@@ -6,7 +6,7 @@
 #include <Acceptor.hpp>
 #include <Connection.hpp>
 #include <cstdint>
-#include <unordered_map>
+#include <map>
 #include <utils/log.hpp>
 class Server {
 private:
@@ -19,17 +19,24 @@ private:
   const static uint32_t BUFFER_SIZE = 1024;
   std::unique_ptr<Logger> logger;
   std::unique_ptr<Acceptor> serAcceptor;
-  std::unordered_map<int, Connection *> connections;
+  std::map<int, std::shared_ptr<Connection>> connections;
   int nextConnId;
-  std::function<void(Connection *)> onConnectCallback;
+  std::function<void(const std::shared_ptr<Connection> &)> onConnectCallback;
+  std::function<void(const std::shared_ptr<Connection> &)> onMessageCallback;
 
 public:
   Server(uint16_t port = m_port, const char *ip = m_ip);
   ~Server();
   void Start();
-  void HandleNewConenction(int fd);
-  void HandleClose(int fd);
-  void onConnect(std::function<void(Connection *)> fn);
+  // 处理新连接的回调函数
+  void HandleNewConnection(int fd);
+  void HandleClose(const std::shared_ptr<Connection> &conn);
+  void HandleCloseInLoop(const std::shared_ptr<Connection> &conn);
+  // 处理关闭连接的回调函数
+  void setConnectionCallback(
+      const std::function<void(const std::shared_ptr<Connection> &)> &fn);
+  void setOnMessageCallback(
+      const std::function<void(const std::shared_ptr<Connection> &)> &fn);
   // getter and setter
   uint32_t getBufferSize() const { return BUFFER_SIZE; }
   Acceptor *getAcceptor() { return serAcceptor.get(); }

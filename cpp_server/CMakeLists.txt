@@ -9,6 +9,7 @@ set(CMAKE_C_COMPILER "/usr/bin/clang")
 set(CMAKE_BUILD_TYPE Debug)
 project(cpp_server VERSION 0.1.0 LANGUAGES C CXX)
 
+
 aux_source_directory(src SRC_LIST)
 add_executable(server ${CMAKE_SOURCE_DIR}/init/index.cpp  ${SRC_LIST})
 add_executable(client ${CMAKE_SOURCE_DIR}/init/client.cpp  ${SRC_LIST})
@@ -18,3 +19,15 @@ target_include_directories(server PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(client PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(Connclient PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(test PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    message(STATUS "Linux system detected")
+    target_compile_definitions(server PRIVATE -D__LINUX__)
+elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    message(STATUS "Mac system detected")
+    target_compile_definitions(server PRIVATE -D__MAC__)
+else()
+    message(WARNING "Unknown system detected")
+endif()
+
+add_subdirectory(tests)

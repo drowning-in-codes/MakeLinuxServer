@@ -3,14 +3,26 @@
 #include <Server.hpp>
 #include <memory>
 #include <utils/utils.hpp>
+
+class EchoServer{
+  public:
+  std::unique_ptr<Server> server;
+  EchoServer():server(std::make_unique<Server>()){}
+  void setOnMessageCallback(std::function<void(const std::shared_ptr<Connection> &)> callback){
+    server->setOnMessageCallback(callback);
+  }
+  void Start() {
+    server->Start();
+  }
+};
 int main() {
-  auto server = std::make_unique<Server>();
-  server->onConnect([](Connection *conn) {
-    // 当创建连接后,如果有可读事件
-    if (conn->GetState() == Connection::ConnectionState::Connected) {
-      conn->Send("You sent-> " + std::string(conn->GetReadData()));
-    }
-  });              // 设置连接回调函数
-  server->Start(); // 启动服务器
+  auto echoServer = std::make_unique<EchoServer>();
+  echoServer->setOnMessageCallback([](const std::shared_ptr<Connection> &conn) {
+    // 处理接收到的消息
+    std::cout << "Received message: " << conn->GetReadData() << std::endl;
+    std::string message = conn->GetReadData();
+    conn->Send("Echo: " + message);
+  });
+  echoServer->Start();
   return 0;
 }

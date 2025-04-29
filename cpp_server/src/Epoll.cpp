@@ -3,12 +3,8 @@
 #include <strings.h>
 #include <sys/epoll.h>
 #include <unistd.h>
-Epoll::~Epoll() {
-  if (epoll_fd != -1) {
-    ::close(epoll_fd);
-  }
-  delete[] events;
-}
+
+#ifdef __linux__
 
 void Epoll::addfd(int fd) { addfd(fd, EPOLLIN | EPOLLOUT); }
 void Epoll::addfd(int fd, uint32_t op) {
@@ -41,6 +37,7 @@ std::vector<Channel *> Epoll::poll_channel(int timeout) {
   }
   return active_channels;
 }
+
 void Epoll::updateChannel(Channel *channel) {
   epoll_event event;
   bzero(&event, sizeof(event));
@@ -61,4 +58,61 @@ void Epoll::deleteChannel(Channel *channel) {
     epoll_ctl(epoll_fd, EPOLL_CTL_DEL, channel->getFd(), nullptr);
   }
   channel->setInEpoll(false);
+}
+#endif
+
+#ifdef __MAC__
+void Epoll::updateChannel(Channel *channel) {
+  kevent ev[2];
+  bzero(ev, 2 * sizeof(ev));
+  int n = 0;
+  int fd = channel->getFd();
+  int op = EV_ADD;
+  EV_SET(&ev[n++], fd, EVFILT_READ, op, 0, 0, ch);
+  EV_SET(&ev[n++], fd, EVFILT_WRITE, op, 0, 0, ch);
+  kevent(fd, ev, n, NULL, 0, NULL);
+}
+
+void Epoll::deleteChannel(Channel *ch) {
+  struct kevent ev[2];
+  int n = 0;
+  int fd = ch->getFd();
+  EV_SET(&ev[n++], fd, EVFILT_READ, EV_DELETE, 0, 0, ch);
+  EV_SET(&ev[n++], fd, EVFILT_WRITE, EV_DELETE, 0, 0, ch);
+ kevent(fd_, ev, n, NULL, 0, NULL);
+}
+
+std::vector<Channel *> Poller::Poll(int timeout) {
+  std::vector<Channel *> active_channels;
+  struct timespec ts;
+  memset(&ts, 0, sizeof(ts));
+  if (timeout != -1) {
+    ts.tv_sec = timeout / 1000;
+    ts.tv_nsec = (timeout % 1000) * 1000 * 1000;
+  }
+  int nfds = 0;
+  if (timeout == -1) {
+    nfds = kevent(fd_, NULL, 0, events_, MAX_EVENTS, NULL);
+  } else {
+    nfds = kevent(fd_, NULL, 0, events_, MAX_EVENTS, &ts);
+  }
+  for (int i = 0; i < nfds; ++i) {
+    Channel *ch = (Channel *)events_[i].udata;
+    int events = events_[i].filter;
+    if (events == EVFILT_READ) {
+      ch->SetReadyEvents( /*ch->READ_EVENT*/ 1 | 4 /*ch->ET*/);
+    }
+    if (events == EVFILT_WRITE) {
+      ch->SetReadyEvents(/*ch->WRITE_EVENT*/ 2| 4 /*ch->ET*/);
+    }
+    active_channels.push_back(ch);
+  }
+  return active_channels;
+}
+#endif
+Epoll::~Epoll() {
+  if (epoll_fd != -1) {
+    ::close(epoll_fd);
+  }
+  delete[] events;
 }

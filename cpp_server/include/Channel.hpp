@@ -3,6 +3,7 @@
 #include "utils/utils.hpp"
 #include <cstdint>
 #include <functional>
+#include <memory>
 class EventLoop;
 class Channel {
   /**
@@ -20,7 +21,7 @@ private:
   uint32_t readyEvents;
   bool inEpoll;
   int fd;
-
+  std::weak_ptr<void> m_tie;
 public:
   DISALLOW_COPY_AND_MOVE(Channel);
   Channel(EventLoop *t_loop, int fd, bool blocking = false);
@@ -29,7 +30,8 @@ public:
 
   // channel回调事件
   void handleEvent() const;
-
+  void handleEventWithGuard() const;
+  void Tie(const std::shared_ptr<void>& ptr);
   // 设置epoll相关事件
   void enableRead();
   void enableReadAndET();
@@ -42,6 +44,9 @@ public:
   void disableWrite();
   void disableET();
   void disableOpts(uint32_t opts);
+
+  // 
+  bool tied;
 
   // getter and setter
   void setUseThreadPool(bool use) { useThreadPool = use; }

@@ -52,7 +52,21 @@ void Channel::enableOpts(uint32_t opts) {
 }
 void Channel::handleEvent() const {
   // 根据事件类型处理对应的回调函数
-  if (readyEvents & (EPOLLIN | EPOLLPRI | EPOLLRDHUP )) {
+  if (tied) {
+    // 增加引用计数
+    auto guard = m_tie.lock();
+    handleEventWithGuard();
+  }else{
+    handleEventWithGuard();
+  }
+}
+void Channel::Tie(const std::shared_ptr<void> &ptr) {
+  tied = true;
+  m_tie = ptr;
+}
+
+void Channel::handleEventWithGuard() const {
+  if (readyEvents & (EPOLLIN | EPOLLPRI | EPOLLRDHUP)) {
     if (readCallback) {
       readCallback();
     }

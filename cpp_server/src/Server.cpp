@@ -1,11 +1,14 @@
 #include "Acceptor.hpp"
+#include "Connection.hpp"
 #include "InetAddress.hpp"
 #include "SerSocket.hpp"
 #include "utils/utils.hpp"
 #include <Channel.hpp>
+#include <CurrentThread.hpp>
 #include <Epoll.hpp>
 #include <Server.hpp>
 #include <cassert>
+#include <csignal>
 #include <memory>
 #include <utils/utils.hpp>
 Server::Server(uint16_t port, const char *ip) : nextConnId(1) {
@@ -16,7 +19,7 @@ Server::Server(uint16_t port, const char *ip) : nextConnId(1) {
   serAcceptor = std::make_unique<Acceptor>(
       mainReactor.get(), port, ip); // 创建Acceptor,将fd放入epoll监听
   serAcceptor->setNewConnectionCallback(
-      [this](int fd) { HandleNewConenction(fd); });
+      [this](int fd) { HandleNewConnection(fd); });
   // 主线程池 添加HandleNewConenction
   threadPool = std::make_unique<ThreadPool>();
   for (int i = 0; i < threadPool->thread_num(); i++) {
@@ -32,42 +35,56 @@ void Server::Start() {
     // 添加任务队列,循环监听subreactor的epoll
     threadPool->add([this, i]() { subReactor[i]->loop(); }); // 启动事件循环
   }
+  // ctrl-c 信号处理事件
+  std::signal(SIGINT, [](int signum) {
+    std::cout << "\nServer Stopped. Have a nice day!😄" << std::endl;
+    exit(0);
+  });
   mainReactor->loop();
 }
-void Server::HandleNewConenction(int client_fd) {
+void Server::HandleNewConnection(int client_fd) {
   assert(client_fd != -1);
   int connIndex = client_fd % subReactor.size();
   // 创建客户端连接,根据对应的subReactor(epoll实例)创建连接类
-  Connection *conn =
-      new Connection(subReactor[connIndex].get(), client_fd, nextConnId++);
+  auto conn = std::make_shared<Connection>(subReactor[connIndex].get(),
+                                           client_fd, nextConnId++);
   conn->SetOnConnectCallback(onConnectCallback);
+  conn->setOnMessageCallback(onMessageCallback);
   //   创建channel,设置fd和所属epoll实例,回调函数
-  conn->setCloseCallback([this](int t_fd) { HandleClose(t_fd); });
+  conn->setOnCloseCallback(
+      [this](const std::shared_ptr<Connection> &conn) { HandleClose(conn); });
   connections[client_fd] = conn;
+  // 将connection分配给Channel的tie,增加计数 并开始监听读事件
+  conn->ConnectionEstablished();
+}
+void Server::HandleClose(const std::shared_ptr<Connection> &conn) {
+  // 让主线程的eventloop执行方法
+  mainReactor->runOneFunc([this, conn]() { HandleCloseInLoop(conn); });
 }
 
-void Server::HandleClose(int fd) {
-  //  找到对应的connection
-  auto it = connections.find(fd);
+void Server::HandleCloseInLoop(const std::shared_ptr<Connection> &conn) {
+  std::cout << CurrentThread::tid()
+            << " TcpServer::HandleCloseInLoop - Remove connection id: "
+            << conn->getConid() << " and fd: " << conn->getFd() << std::endl;
+  auto it = connections.find(conn->getFd());
   if (it != connections.end()) {
-    // 从connections map中阐述
-    connections.erase(it); // 从map中删除
-    auto conn = it->second;
-    // 关闭连接
-    ::close(fd);
-    // 从epoll中删除fd
-    conn->getEventLoop()->deleteChannel(conn->getChannel());
-    conn = nullptr;
-    // 这里没有调用 delete conn; 
-    // 因为这个回调方法本身在Connection的调用中
+    //  引用减少
+    connections.erase(it);
   }
+  auto loop = conn->getEventLoop();
+  loop->QueueOneFunc([conn]() {
+    // 关闭连接 在对应的connection中关闭
+    conn->ConnectionDestructor();
+  });
 }
-void Server::onConnect(std::function<void(Connection *)> fn) {
+
+void Server::setConnectionCallback(
+    const std::function<void(const std::shared_ptr<Connection> &)> &fn) {
   onConnectCallback = std::move(fn);
 }
-
-Server::~Server() {
-  for (auto conn : connections) {
-    delete conn.second;
-  }
+void Server::setOnMessageCallback(
+    const std::function<void(const std::shared_ptr<Connection> &)> &fn) {
+  onMessageCallback = std::move(fn);
 }
+
+Server::~Server() {}
